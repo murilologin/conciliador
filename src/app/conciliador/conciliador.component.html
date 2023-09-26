@@ -1,0 +1,64 @@
+<div class="po-wrapper">
+   
+   
+    <div class="text-center">
+      <input class="form-control" type="file"
+          (change)="onChange($event)">
+      <br>
+  
+      <label>Linha inicio (abrir aquivo csv como texto e verificar):</label>
+      <input name="inicio" class="form-control" type="text" [(ngModel)]="inicio">
+      <br>
+  
+      <label>Tipo v=venda p=pagamento:</label>
+      <input class="form-control" type="text" [(ngModel)]="tipo">
+      <br>
+  
+  
+      <button (click)="onUpload()"
+        class="btn btn-success">
+        Upload
+      </button>
+  
+      <br>
+      <button (click)="onTeste()"
+        class="btn btn-success">
+        Testa comunicação com API
+      </button>
+  
+      <br>
+      <button (click)="onTestaBanco()"
+        class="btn btn-success">
+        Testa comunicação com banco de dados
+      </button>
+  
+    </div>
+    <br>
+  
+    <!--Flag variable is used here-->
+    <div class="container" *ngIf="loading">
+      <h3>Loading ...</h3>
+    </div>
+  
+    <br>
+    <p>Dados do arquivo:</p>
+    <div>
+      {{ dados | json }}
+    </div>
+  
+    <br>
+    <p>Teste banco de dados:</p>
+    <div>
+      {{ lojas | json }}
+    </div>
+    
+    <!-- Shareable short link of uploaded file -->
+    <div class="container text-center jumbotron"
+      *ngIf="shortLink">
+      <h2> Visit Here</h2>
+      <a href="{{shortLink}}">{{shortLink}}</a>
+    </div>
+  
+   
+  </div>
+  

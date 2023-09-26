@@ -8,20 +8,27 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { PoTemplatesModule } from '@po-ui/ng-templates';
 import { NgxCsvParserModule } from 'ngx-csv-parser';
+import { FormsModule } from '@angular/forms';
+
+import { ConciliadorModule } from './conciliador/conciliador-module';
+import { ConciliadorRoutingModule } from './conciliador/conciliador-routing.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent    
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     PoModule,
     HttpClientModule,
-    RouterModule.forRoot([]),
+    RouterModule, //.forRoot([]),
     PoTemplatesModule,
     PoFieldModule,
-    NgxCsvParserModule
+    NgxCsvParserModule,
+    ConciliadorModule,
+    ConciliadorRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
