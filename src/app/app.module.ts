@@ -23,7 +23,8 @@ import { ConciliadorRoutingModule } from './conciliador/conciliador-routing.modu
     FormsModule,
     PoModule,
     HttpClientModule,
-    RouterModule, //.forRoot([]),
+    RouterModule.forRoot([]),
+    PoModule,
     PoTemplatesModule,
     PoFieldModule,
     NgxCsvParserModule,
@@ -32,5 +33,6 @@ import { ConciliadorRoutingModule } from './conciliador/conciliador-routing.modu
   ],
   providers: [],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule { }

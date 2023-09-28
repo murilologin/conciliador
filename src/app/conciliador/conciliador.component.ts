@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConciliadorService } from './conciliador.service';
 import { NgxCsvParser, NgxCSVParserError } from 'ngx-csv-parser';
+import { PoButtonGroupItem, PoCheckboxGroupOption, PoDropdownAction, PoNotificationService, PoSelectOption, PoSelectOptionGroup } from '@po-ui/ng-components';
 
 export class Dados {
   codigo: string = '';
@@ -18,21 +19,34 @@ export class ConciliadorComponent implements OnInit {
 
     // Variable to store shortLink from api response
     shortLink: string = "";
-    loading: boolean = false; // Flag variable
-    file: any = null; // Variable to store file
+    
+    file: any; // Variable to store file
     header: boolean = false;
     csvRecords: any;
     menus:any;
     dados: any = undefined;
     lojas: any = undefined;
     inicio: number = 13;
-    tipo: string = "v"; //v=venda p=pagamento
+    tipo: string = "v"; //v=venda r=recebimento
 
+    isHideLoading = true;
+    
+    readonly propertiesOptions: Array<PoCheckboxGroupOption> = [
+      { value: 'v', label: 'VENDAS' },
+      { value: 'r', label: 'RECEBIMENTOS' }
+    ];
+   
+    buttons: Array<PoButtonGroupItem> = [
+      { label: 'Testa comunicação com API', action: this.onTeste.bind(this) },
+      { label: 'Testa banco de dados', action: this.onTestaBanco.bind(this) },
+      { label: 'Conciliar arquivo', action: this.onUpload.bind(this)}
+    ];
   
     // Inject service 
     constructor(
       private fileUploadService: ConciliadorService,
-      private ngxCsvParser: NgxCsvParser
+      private ngxCsvParser: NgxCsvParser,
+      public poNotification: PoNotificationService
       ) { }
   
     ngOnInit(): void {
@@ -70,47 +84,51 @@ export class ConciliadorComponent implements OnInit {
   
     // OnClick of button Upload
     onUpload() {
-        this.loading = true;
-        console.log(this.file);
-        this.fileUploadService.upload(this.file, this.inicio, this.tipo).subscribe({
-          next: () => {
-            alert("OK");
-            this.loading = false;
-          },
-          error: (err) => {
-            alert("Falha");
-            this.loading = false;
-            console.log(err);
-          }
-        });        
+      if (this.csvRecords == undefined) {
+        this.poNotification.warning("Selecione o arquivo");        
+      } else {        
+        this.isHideLoading = false;
+          console.log(this.file);
+          this.fileUploadService.upload(this.file, this.inicio, this.tipo).subscribe({
+            next: () => {
+              this.isHideLoading = true;
+              this.poNotification.success("Arquivo enviado com sucesso");            
+            },
+            error: (err) => {
+              this.isHideLoading = true;
+              this.poNotification.error(err);
+              console.log(err);
+            }
+          });        
+      }
     }
 
     onTeste() {
-      this.loading = true;
+      this.isHideLoading = false;
       this.fileUploadService.testa().subscribe({
         next: () => {
-          this.loading = false;
-          alert("OK");
+          this.isHideLoading = true;
+          this.poNotification.success("OK");          
         }, 
         error: (err) => {
-          this.loading = false;
-          alert("Falha");
+          this.isHideLoading = true;
+          this.poNotification.error(err);
           console.log(err);
         }
       })
     }
 
     onTestaBanco() {
-      this.loading = true;
+      this.isHideLoading = false;
       this.fileUploadService.testaBanco().subscribe({
         next: (response) => {
-          this.loading = false;
+          this.isHideLoading = true;
           this.lojas = response;
-          alert("OK");
+          this.poNotification.success("OK");
         }, 
         error: (err) => {
-          this.loading = false;
-          alert("Falha");
+          this.isHideLoading = true;
+          this.poNotification.error(err);
           console.log(err);
         }
       })

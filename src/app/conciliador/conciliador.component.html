@@ -1,64 +1,62 @@
 <div class="po-wrapper">
-   
-   
-    <div class="text-center">
-      <input class="form-control" type="file"
-          (change)="onChange($event)">
-      <br>
-  
-      <label>Linha inicio (abrir aquivo csv como texto e verificar):</label>
-      <input name="inicio" class="form-control" type="text" [(ngModel)]="inicio">
-      <br>
-  
-      <label>Tipo v=venda p=pagamento:</label>
-      <input class="form-control" type="text" [(ngModel)]="tipo">
-      <br>
-  
-  
-      <button (click)="onUpload()"
-        class="btn btn-success">
-        Upload
-      </button>
-  
-      <br>
-      <button (click)="onTeste()"
-        class="btn btn-success">
-        Testa comunicação com API
-      </button>
-  
-      <br>
-      <button (click)="onTestaBanco()"
-        class="btn btn-success">
-        Testa comunicação com banco de dados
-      </button>
-  
-    </div>
-    <br>
-  
-    <!--Flag variable is used here-->
-    <div class="container" *ngIf="loading">
-      <h3>Loading ...</h3>
-    </div>
-  
-    <br>
-    <p>Dados do arquivo:</p>
-    <div>
-      {{ dados | json }}
-    </div>
-  
-    <br>
-    <p>Teste banco de dados:</p>
-    <div>
-      {{ lojas | json }}
-    </div>
-    
-    <!-- Shareable short link of uploaded file -->
-    <div class="container text-center jumbotron"
-      *ngIf="shortLink">
-      <h2> Visit Here</h2>
-      <a href="{{shortLink}}">{{shortLink}}</a>
-    </div>
-  
-   
+
+  <div>
+    <po-loading-overlay [hidden]="isHideLoading"></po-loading-overlay>
   </div>
-  
+
+
+  <div class="text-center">
+    <div class="po-row">
+      <input class="form-control" type="file" (change)="onChange($event)">      
+    </div>
+    <br>
+
+    <!--
+    <div class="po-row">
+      <po-upload
+        class="po-md-12"
+        name="resume"        
+        p-label="Arquivo CSV"
+      >
+      </po-upload>
+    </div>    
+    -->
+
+    <div class="po-row">
+      <po-number class="po-md-2" name="maxlength" [(ngModel)]="inicio" p-clean p-label="Linha inicial"> </po-number>
+    </div>
+    <po-info p-label="Linha inicio (abrir aquivo csv como texto e verificar)"> </po-info>
+
+    <div class="po-row">
+      <po-radio-group [(ngModel)]="tipo" name="radioGroupBasic" p-label="Tipo de arquivo:" [p-options]="[
+          { label: 'Vendas', value: 'v' },
+          { label: 'Recebimentos', value: 'r' }
+        ]">
+      </po-radio-group>
+    </div>
+  </div>
+  <br>
+
+  <po-button-group class="po-md-12" [p-buttons]="buttons"> </po-button-group>
+
+
+  <br>
+  <p>Dados do arquivo:</p>
+  <div>
+    {{ dados | json }}
+  </div>
+
+  <br>
+  <p>Teste banco de dados:</p>
+  <div>
+    {{ lojas | json }}
+  </div>
+
+  <!-- Shareable short link of uploaded file -->
+  <div class="container text-center jumbotron" *ngIf="shortLink">
+    <h2> Visit Here</h2>
+    <a href="{{shortLink}}">{{shortLink}}</a>
+  </div>
+
+
+</div>
