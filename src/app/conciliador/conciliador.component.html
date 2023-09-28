@@ -1,4 +1,4 @@
-<div class="po-wrapper">
+<div >
 
   <div>
     <po-loading-overlay [hidden]="isHideLoading"></po-loading-overlay>
@@ -23,11 +23,6 @@
     -->
 
     <div class="po-row">
-      <po-number class="po-md-2" name="maxlength" [(ngModel)]="inicio" p-clean p-label="Linha inicial"> </po-number>
-    </div>
-    <po-info p-label="Linha inicio (abrir aquivo csv como texto e verificar)"> </po-info>
-
-    <div class="po-row">
       <po-radio-group [(ngModel)]="tipo" name="radioGroupBasic" p-label="Tipo de arquivo:" [p-options]="[
           { label: 'Vendas', value: 'v' },
           { label: 'Recebimentos', value: 'r' }
@@ -39,11 +34,10 @@
 
   <po-button-group class="po-md-12" [p-buttons]="buttons"> </po-button-group>
 
-
   <br>
-  <p>Dados do arquivo:</p>
-  <div>
-    {{ dados | json }}
+
+  <div class="po-row" >
+    <po-grid class="po-md-12" [p-data]="dataGrid" [p-columns]="columnsGrid"> </po-grid>
   </div>
 
   <br>
@@ -51,12 +45,5 @@
   <div>
     {{ lojas | json }}
   </div>
-
-  <!-- Shareable short link of uploaded file -->
-  <div class="container text-center jumbotron" *ngIf="shortLink">
-    <h2> Visit Here</h2>
-    <a href="{{shortLink}}">{{shortLink}}</a>
-  </div>
-
 
 </div>

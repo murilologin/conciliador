@@ -1,13 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, numberAttribute } from '@angular/core';
 import { ConciliadorService } from './conciliador.service';
 import { NgxCsvParser, NgxCSVParserError } from 'ngx-csv-parser';
 import { PoButtonGroupItem, PoCheckboxGroupOption, PoDropdownAction, PoNotificationService, PoSelectOption, PoSelectOptionGroup } from '@po-ui/ng-components';
-
-export class Dados {
-  codigo: string = '';
-  nome: string = '';
-  obs: string = '';
-}
 
 
 @Component({
@@ -16,17 +10,14 @@ export class Dados {
   styleUrls: ['./conciliador.component.css']
 })
 export class ConciliadorComponent implements OnInit {
-
-    // Variable to store shortLink from api response
-    shortLink: string = "";
     
-    file: any; // Variable to store file
-    header: boolean = false;
+    file: any; // Variable to store file   
+    header: any; 
     csvRecords: any;
     menus:any;
     dados: any = undefined;
     lojas: any = undefined;
-    inicio: number = 13;
+    
     tipo: string = "v"; //v=venda r=recebimento
 
     isHideLoading = true;
@@ -41,6 +32,15 @@ export class ConciliadorComponent implements OnInit {
       { label: 'Testa banco de dados', action: this.onTestaBanco.bind(this) },
       { label: 'Conciliar arquivo', action: this.onUpload.bind(this)}
     ];
+
+    columnsGrid: any[] = [
+      { property: 'dados', label: 'Dados'}
+    ];
+  
+    dataGrid: any[] = [];
+    //lista de dados
+    //[{dados: 'kjkjlj'}, {dados: 'kfjslkfj'}] enviar assim para o backend
+
   
     // Inject service 
     constructor(
@@ -50,10 +50,14 @@ export class ConciliadorComponent implements OnInit {
       ) { }
   
     ngOnInit(): void {
+      
     }
   
     // On file Select
     onChange(event:any) { 
+      this.dataGrid = [];
+      let linha:string = '';
+      let valendo: boolean = false;
       this.header = (this.header as unknown as string) === 'true' || this.header === true;
       
       const files = event.srcElement.files;
@@ -61,12 +65,49 @@ export class ConciliadorComponent implements OnInit {
       this.ngxCsvParser.parse(files[0], { header: this.header, delimiter: ';', encoding: 'utf8' })
       .pipe().subscribe({
         next: (result): void => {
-          this.csvRecords = result;          
-          
-          for (let i = 0; i < this.csvRecords.length; i++) {            
-            for (let y = 0; y < this.csvRecords[i].length; y++) {
-              console.log(this.csvRecords[i][y]);  
-            }            
+          this.csvRecords = result; 
+
+          if (this.tipo == 'v') {
+            for (let i = 0; i < this.csvRecords.length; i++) {                                  
+              linha = '';
+              for (let y = 0; y < 27; y++) {
+                linha = linha + this.csvRecords[i][y] + ';';
+              }            
+              if (valendo) {
+                this.dataGrid.push({dados: linha})
+              }
+              if (linha.substring(0, 20) == 'C�d. Estabelecimento' && valendo == false) {valendo = true;}            
+            }
+            if (valendo) {
+              this.poNotification.success('Arquivo carregado com sucesso');
+            } else {
+              this.poNotification.warning('Arquivo fora do padrão');
+            } 
+          }
+          if (this.tipo == 'r') {
+            for (let i = 0; i < this.csvRecords.length; i++) {                                  
+              linha = '';
+              for (let y = 0; y < 18; y++) {
+                linha = linha + this.csvRecords[i][y] + ';';
+              }            
+              if (valendo) {
+                if (linha.includes('Saldo anterior')) {
+                  //ignora
+                } else if (linha.includes('o vencimento')) {
+                  //ignora
+                } else if (linha.includes('Valor Liquidado (R$)')) {
+                  //ignora
+                } else {
+                  this.dataGrid.push({dados: linha});
+                }
+              }
+              if (linha.substring(0, 20) == 'C�DIGO CENTRALIZADOR' && valendo == false) {valendo = true;}            
+            }
+            if (valendo) {
+              this.poNotification.success('Arquivo carregado com sucesso');
+            } else {
+              this.poNotification.warning('Arquivo fora do padrão');
+            } 
           }
         },
         error: (error: NgxCSVParserError): void => {
@@ -89,10 +130,11 @@ export class ConciliadorComponent implements OnInit {
       } else {        
         this.isHideLoading = false;
           console.log(this.file);
-          this.fileUploadService.upload(this.file, this.inicio, this.tipo).subscribe({
+          //this.fileUploadService.upload(this.file, this.inicio, this.tipo).subscribe({
+          this.fileUploadService.uploadVendas(this.dataGrid).subscribe({
             next: () => {
               this.isHideLoading = true;
-              this.poNotification.success("Arquivo enviado com sucesso");            
+              this.poNotification.success("Arquivo conciliado com sucesso");            
             },
             error: (err) => {
               this.isHideLoading = true;

@@ -39,6 +39,12 @@ export class ConciliadorService {
         return this.http.put(this.baseApiUrl + "/arquivo", formData);
     }
 
+    uploadVendas(dataGrid: any[]):Observable<any> {
+        console.log(this.baseApiUrl);
+        return this.http.put(this.baseApiUrl + "/vendas", dataGrid);
+    }
+
+
     testa():Observable<any> {
         return this.http.get(this.baseApiUrl + "/teste");
     }
