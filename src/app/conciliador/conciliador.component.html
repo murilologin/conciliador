@@ -6,21 +6,6 @@
 
 
   <div class="text-center">
-    <div class="po-row">
-      <input class="form-control" type="file" (change)="onChange($event)">      
-    </div>
-    <br>
-
-    <!--
-    <div class="po-row">
-      <po-upload
-        class="po-md-12"
-        name="resume"        
-        p-label="Arquivo CSV"
-      >
-      </po-upload>
-    </div>    
-    -->
 
     <div class="po-row">
       <po-radio-group [(ngModel)]="tipo" name="radioGroupBasic" p-label="Tipo de arquivo:" (p-change)="changeTipo($event)"
@@ -30,6 +15,10 @@
         ]">
       </po-radio-group>
     </div>
+  </div>
+
+  <div class="po-row">
+    <input class="form-control" type="file" (change)="onChange($event)">      
   </div>
   <br>
 
