@@ -52,6 +52,10 @@ export class ConciliadorComponent implements OnInit {
     ngOnInit(): void {
       
     }
+
+    changeTipo(event:any) {
+      this.dataGrid = [];
+    }
   
     // On file Select
     onChange(event:any) { 
@@ -130,18 +134,31 @@ export class ConciliadorComponent implements OnInit {
       } else {        
         this.isHideLoading = false;
           console.log(this.file);
-          //this.fileUploadService.upload(this.file, this.inicio, this.tipo).subscribe({
-          this.fileUploadService.uploadVendas(this.dataGrid).subscribe({
-            next: () => {
-              this.isHideLoading = true;
-              this.poNotification.success("Arquivo conciliado com sucesso");            
-            },
-            error: (err) => {
-              this.isHideLoading = true;
-              this.poNotification.error(err);
-              console.log(err);
-            }
-          });        
+          if (this.tipo == 'v') {
+            this.fileUploadService.uploadVendas(this.dataGrid).subscribe({
+              next: () => {
+                this.isHideLoading = true;
+                this.poNotification.success("Arquivo conciliado com sucesso");            
+              },
+              error: (err) => {
+                this.isHideLoading = true;
+                this.poNotification.error(err);
+                console.log(err);
+              }
+            });
+          } else if (this.tipo == 'r') {
+            this.fileUploadService.uploadRecebimentos(this.dataGrid).subscribe({
+              next: () => {
+                this.isHideLoading = true;
+                this.poNotification.success("Arquivo conciliado com sucesso");            
+              },
+              error: (err) => {
+                this.isHideLoading = true;
+                this.poNotification.error(err);
+                console.log(err);
+              }
+            });
+          }
       }
     }
 

@@ -23,7 +23,8 @@
     -->
 
     <div class="po-row">
-      <po-radio-group [(ngModel)]="tipo" name="radioGroupBasic" p-label="Tipo de arquivo:" [p-options]="[
+      <po-radio-group [(ngModel)]="tipo" name="radioGroupBasic" p-label="Tipo de arquivo:" (p-change)="changeTipo($event)"
+       [p-options]="[
           { label: 'Vendas', value: 'v' },
           { label: 'Recebimentos', value: 'r' }
         ]">
